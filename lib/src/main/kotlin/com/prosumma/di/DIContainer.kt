@@ -93,7 +93,6 @@ open class DIContainer: Container, Assembler {
                         resolveFactoryAsSingleton(key, registration as Factory<T>, params)
                     }
                 }
-
             }
         }
 
