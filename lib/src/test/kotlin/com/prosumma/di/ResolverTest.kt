@@ -69,4 +69,11 @@ class ResolverTest {
         val something: Something = container.resolve("something", tag = tag)
         assertEquals(something.s, "something")
     }
+
+    @Test
+    fun `tryResolve works`() {
+        val container = DIContainer()
+        val tag = 42
+        assertNull(container.tryResolve<Service>(tag = tag))
+    }
 }
