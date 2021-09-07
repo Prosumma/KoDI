@@ -22,12 +22,26 @@ class PluginAssembly: Assembly {
   }
 }
 
+interface CoolService
+class ConcreteCoolService(val target: String): CoolService
+
+class CoreAssembly: Assembly {
+  override val assemblies: List<Assembly>
+    get() = listOf(PluginAssembly())
+
+  override fun register(registrar: Registrar) {
+    registrar.singleton<CoolService>(params(::ConcreteCoolService))
+  }
+}
+
 fun main() {
-  DI.assemble(PluginAssembly())
+  DI.assemble(CoreAssembly())
   // Resolve all plugins, regardless of tag
-  val plugins: List<Plugin> = DI.resolveFilter(Key.isClass<Plugin>())
+  val plugins: List<Plugin> = DI.resolveClass<Plugin>()
   // Resolve a particular plugin
   val plugin: Plugin = DI.tagged("my").resolve()
+  // Resolve a service with parameter
+  val coolService: CoolService = DI.resolve("cool") 
 }
 ```
 
