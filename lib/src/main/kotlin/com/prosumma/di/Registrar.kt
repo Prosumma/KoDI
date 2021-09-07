@@ -1,6 +1,7 @@
 package com.prosumma.di
 
 interface Registrar {
+
     fun <T> register(
         key: Key,
         lifetime: Lifetime = Lifetime.FACTORY,
