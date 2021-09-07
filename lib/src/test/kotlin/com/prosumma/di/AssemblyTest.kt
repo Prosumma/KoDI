@@ -41,7 +41,7 @@ class AssemblyTest {
         val container = DIContainer()
         val assembly1 = ServiceAssembly()
         val assembly2 = ServiceAssembly()
-        container.assemble(assembly1, assembly2, ServiceAssembly())
+        container.assemble(assembly1, assembly2, assembly1, ServiceAssembly())
         assertTrue(assembly1.count == 1)
         // Because it was skipped
         assertTrue(assembly2.count == 0)
