@@ -39,7 +39,7 @@ fun main() {
   // Resolve all plugins, regardless of tag
   val plugins: List<Plugin> = DI.resolveClass<Plugin>()
   // Resolve a particular plugin
-  val plugin: Plugin = DI..resolve(tag = "my")
+  val plugin: Plugin = DI.resolve(tag = "my")
   // Resolve a service with parameter
   val coolService: CoolService = DI.resolve("cool") 
 }
