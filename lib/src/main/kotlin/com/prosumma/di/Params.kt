@@ -9,4 +9,6 @@ class Params(vararg params: Any) {
     operator fun <T> component1(): T = this[0]
     operator fun <T> component2(): T = this[1]
     operator fun <T> component3(): T = this[2]
+    operator fun <T> component4(): T = this[3]
+    operator fun <T> component5(): T = this[4]
 }
