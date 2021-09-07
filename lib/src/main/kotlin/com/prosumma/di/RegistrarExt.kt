@@ -17,5 +17,5 @@ inline fun <reified T: Any> Registrar.singleton(
     noinline definition: Definition<T>? = null
 ): Key = register(Lifetime.SINGLETON, definition)
 
-inline fun <reified T: Any> Registrar.unregister(): Boolean =
-    unregister(Key(T::class))
+inline fun <reified T> Registrar.unregister(tag: Any): Boolean =
+    unregister(Key.create<T>(tag))

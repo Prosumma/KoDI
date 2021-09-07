@@ -1,6 +1,6 @@
 package com.prosumma.di
 
-fun Resolver.tagged(tag: String): TaggedResolver = TaggedResolver(this, tag)
+fun Resolver.tagged(tag: Any): TaggedResolver = TaggedResolver(this, tag)
 
 inline fun <reified T> Resolver.tryResolve(vararg args: Any): T? =
     resolve<T>(Key.create<T>(), Params(*args)).second
