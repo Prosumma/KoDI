@@ -12,7 +12,7 @@ data class Key(val klass: KClass<*>, val tag: Any = Unit) {
             key.klass == klass
         }
 
-        fun tagged(tag: String): Predicate<Key> = { key ->
+        fun tagged(tag: Any): Predicate<Key> = { key ->
             key.tag == tag
         }
     }
