@@ -24,6 +24,3 @@ inline fun <reified T> Resolver.resolveKeys(keys: List<Key>, vararg args: Any): 
     }
     return list
 }
-
-inline fun <reified T> Resolver.resolveLazy(): LazyResolver<T> =
-    LazyResolver.create(this)
