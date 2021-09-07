@@ -63,10 +63,10 @@ class ResolverTest {
         val container = DIContainer()
         // Tags can be of any type
         val tag = 7
-        container.tag(tag).factory { params ->
+        container.factory(tag) { params ->
             Something(params[0])
         }
-        val something: Something = container.tagged(tag).resolve("something")
+        val something: Something = container.resolve("something", tag = tag)
         assertEquals(something.s, "something")
     }
 }
