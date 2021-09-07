@@ -9,31 +9,6 @@ import kotlin.concurrent.write
  *
  * In most cases, prefer to use the `DI` instance,
  * which is a subclass of this type.
- *
- * To create a container hierarchy, simply register
- * an instance of `DIContainer` as a tagged singleton
- * in a parent container.
- *
- * ```kotlin
- * class ChildContainerAssembly: AbstractAssembly {
- *   override fun register(registrar: Registrar) {
- *     registrar.singleton<Foo> { Bar() }
- *   }
- * }
- *
- * DI.tag("child").singleton<DIContainer> {
- *   val di = DIContainer()
- *   di.assemble(ChildContainerAssembly())
- *   di
- * }
- * ```
- *
- * The advantage of this is that, if needed, the child
- * container can be dropped with a single statement:
- *
- * ```kotlin
- * DI.unregister(Key.create<DIContainer>("child"))
- * ```
  */
 open class DIContainer: Container, Assembler {
     // This container is thread-safe.
@@ -84,9 +59,9 @@ open class DIContainer: Container, Assembler {
                 when (registration) {
                     is Singleton<*> -> registration.instance as T
                     is Factory<*> -> if (registration === factory) {
-                        val value = registration.resolve(this, params)
-                        this[key] = Singleton(value)
-                        value
+                        val singleton = registration.resolveSingleton(this, params)
+                        this[key] = singleton
+                        singleton.instance
                     } else {
                         // We can safely recurse and get another lock while keeping this one,
                         // because we have a different instance.
@@ -142,5 +117,4 @@ open class DIContainer: Container, Assembler {
         }
         set.add(assembly)
     }
-
 }

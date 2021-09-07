@@ -1,7 +1,10 @@
 package com.prosumma.di
 
+/**
+ * Class used to pass params.
+ */
 class Params(vararg params: Any) {
-    internal val parameters = params
+    private val parameters = params
 
     @Suppress("UNCHECKED_CAST")
     operator fun <T> get(index: Int): T = parameters[index] as T
