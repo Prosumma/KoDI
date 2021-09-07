@@ -15,9 +15,9 @@ class YourPlugin: Plugin
 
 class PluginAssembly: Assembly {
   override fun register(registrar: Registar) {
-    registrar.apply {
-      tag("my").singleton<Plugin> { MyPlugin() }
-      tag("your").singleton<Plugin> { YourPlugin() }
+    registrar.apply { 
+      singleton<Plugin>("my") { MyPlugin() }
+      singleton<Plugin>("your") { YourPlugin() }
     }
   }
 }
@@ -39,7 +39,7 @@ fun main() {
   // Resolve all plugins, regardless of tag
   val plugins: List<Plugin> = DI.resolveClass<Plugin>()
   // Resolve a particular plugin
-  val plugin: Plugin = DI.tagged("my").resolve()
+  val plugin: Plugin = DI..resolve(tag = "my")
   // Resolve a service with parameter
   val coolService: CoolService = DI.resolve("cool") 
 }
