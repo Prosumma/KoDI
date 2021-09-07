@@ -4,14 +4,14 @@ import kotlin.reflect.full.createInstance
 
 inline fun <reified T: Any> Registrar.register(
     lifetime: Lifetime = Lifetime.FACTORY,
-    tag: Any,
+    tag: Any = Unit,
     noinline definition: Definition<T>? = null
 ): Key = register(Key.create<T>(tag), lifetime, definition ?: { T::class.createInstance() })
 
 inline fun <reified T: Any> Registrar.register(
     lifetime: Lifetime = Lifetime.FACTORY,
-    noinline definition: Definition<T>? = null
-): Key = register(Key.create<T>(), lifetime, definition ?: { T::class.createInstance() })
+    noinline definition: Definition<T>
+): Key = register(Key.create<T>(), lifetime, definition)
 
 inline fun <reified T: Any> Registrar.factory(
     tag: Any = Unit,
@@ -20,7 +20,7 @@ inline fun <reified T: Any> Registrar.factory(
 
 inline fun <reified T: Any> Registrar.factory(
     noinline definition: Definition<T>
-): Key = register(Lifetime.FACTORY, Unit, definition)
+): Key = register(Lifetime.FACTORY, definition)
 
 inline fun <reified T: Any> Registrar.singleton(
     tag: Any = Unit,
@@ -29,7 +29,7 @@ inline fun <reified T: Any> Registrar.singleton(
 
 inline fun <reified T: Any> Registrar.singleton(
     noinline definition: Definition<T>
-): Key = register(Lifetime.SINGLETON, Unit, definition)
+): Key = register(Lifetime.SINGLETON, definition)
 
 inline fun <reified T> Registrar.unregister(tag: Any): Boolean =
     unregister(Key.create<T>(tag))
