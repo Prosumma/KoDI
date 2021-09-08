@@ -31,11 +31,13 @@ class ResolverTest {
         val container = DIContainer()
         container.singleton<Service>()
         val key = Key.create<Service>()
-        var registration = container[key]
-        assertTrue(registration is Factory<*> && registration.lifetime == Lifetime.SINGLETON)
+        var entry = container[key]
+        assertNotNull(entry)
+        assertEquals(entry.status, Entry.Status.UNRESOLVED_SINGLETON)
         container.resolve<Service>()
-        registration = container[key]
-        assertTrue(registration is Singleton<*>)
+        entry = container[key]
+        assertNotNull(entry)
+        assertEquals(entry.status, Entry.Status.RESOLVED_SINGLETON)
     }
 
     @Test

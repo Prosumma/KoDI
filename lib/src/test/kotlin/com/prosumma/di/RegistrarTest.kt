@@ -1,8 +1,6 @@
 package com.prosumma.di
 
-import kotlin.test.Test
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
+import kotlin.test.*
 
 class RegistrarTest {
     class Dependency
@@ -13,8 +11,9 @@ class RegistrarTest {
         container.factory<Dependency>()
         assertTrue(container.contains<Dependency>())
         val key = Key.create<Dependency>()
-        val registration = container[key]
-        assertTrue(registration is Factory<*> && registration.lifetime == Lifetime.FACTORY)
+        val entry = container[key]
+        assertNotNull(entry)
+        assertEquals(entry.status, Entry.Status.FACTORY)
     }
 
     @Test

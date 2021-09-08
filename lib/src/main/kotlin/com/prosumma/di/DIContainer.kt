@@ -13,69 +13,36 @@ import kotlin.concurrent.write
 open class DIContainer: Container, Assembler {
     // This container is thread-safe.
     private val lock = ReentrantReadWriteLock()
-    private val registrations: MutableMap<Key, Registration<*>> = mutableMapOf()
+    private val entries: MutableMap<Key, Entry<*>> = mutableMapOf()
 
-    internal operator fun get(key: Key): Registration<*>? =
-        lock.read { registrations[key] }
+    internal operator fun get(key: Key): Entry<*>? =
+        lock.read { entries[key] }
 
-    internal operator fun set(key: Key, value: Registration<*>) {
-        lock.write { registrations[key] = value }
+    internal operator fun set(key: Key, value: Entry<*>) {
+        lock.write { entries[key] = value }
     }
 
     override fun <T> register(key: Key, lifetime: Lifetime, definition: Definition<T>): Key {
-        this[key] = Factory(lifetime, definition)
+        this[key] = Entry(lifetime, definition)
         return key
     }
 
     override fun unregister(key: Key): Boolean = lock.write {
-        registrations.remove(key) != null
+        entries.remove(key) != null
     }
 
     @Suppress("UNCHECKED_CAST", "NAME_SHADOWING")
     override fun <T> resolve(key: Key, params: Params): Pair<Key, T?> =
-        this[key]?.let { registration ->
-            when (registration) {
-                is Singleton<*> -> key to (registration.instance as T)
-                is Factory<*> -> {
-                    val registration = registration as Factory<T>
-                    when (registration.lifetime) {
-                        Lifetime.FACTORY -> key to registration.resolve(this, params)
-                        Lifetime.SINGLETON -> key to
-                                resolveFactoryAsSingleton(key, registration, params)
-                    }
-                }
-            }
+        this[key]?.let { entry ->
+            val entry = entry as Entry<T>
+            key to entry.resolve(this, params)
         } ?: key to null
 
-    @Suppress("UNCHECKED_CAST")
-    private fun <T> resolveFactoryAsSingleton(key: Key, factory: Factory<T>, params: Params): T? =
-        synchronized(factory) {
-            // While we were waiting for the lock, things may have changed,
-            // so we need to check that…
-            // 1. The key still exists.
-            // 2. It's still a factory and not a singleton.
-            // 3. It's still the same factory instance.
-            this[key]?.let { registration ->
-                when (registration) {
-                    is Singleton<*> -> registration.instance as T
-                    is Factory<*> -> if (registration === factory) {
-                        val singleton = registration.resolveSingleton(this, params)
-                        this[key] = singleton
-                        singleton.instance
-                    } else {
-                        // We can safely recurse and get another lock while keeping this one,
-                        // because we have a different instance.
-                        resolveFactoryAsSingleton(key, registration as Factory<T>, params)
-                    }
-                }
-            }
-        }
-
     override fun containsKey(key: Key): Boolean =
-        lock.read { registrations.containsKey(key) }
+        lock.read { entries.containsKey(key) }
 
     override fun filter(predicate: Predicate<Key>): List<Key> =
-        lock.read { registrations.keys.filter(predicate) }
+        lock.read { entries.keys.filter(predicate) }
 
     override fun assemble(vararg assemblies: Assembly) =
         when (assemblies.size) {
