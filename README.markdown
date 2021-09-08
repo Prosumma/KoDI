@@ -15,9 +15,10 @@ class YourPlugin: Plugin
 
 class PluginAssembly: Assembly {
   override fun register(registrar: Registar) {
+    val group = "plugins"  
     registrar.apply { 
-      singleton<Plugin>("my") { MyPlugin() }
-      singleton<Plugin>("your") { YourPlugin() }
+      singleton<Plugin>(tag = "my", group = "plugins") { MyPlugin() }
+      singleton<Plugin>(tag = "your", group = "plugins") { YourPlugin() }
     }
   }
 }
@@ -36,10 +37,10 @@ class CoreAssembly: Assembly {
 
 fun main() {
   DI.assemble(CoreAssembly())
-  // Resolve all plugins, regardless of tag
-  val plugins: List<Plugin> = DI.resolveClass<Plugin>()
+  // Resolve all plugins, regardless of tag, in the plugins group
+  val plugins: List<Plugin> = DI.resolveAll<Plugin>(group = "plugins")
   // Resolve a particular plugin
-  val plugin: Plugin = DI.resolve(tag = "my")
+  val plugin: Plugin = DI.resolve(tag = "my", group = "plugins")
   // Resolve a service with parameter
   val coolService: CoolService = DI.resolve("cool") 
 }
