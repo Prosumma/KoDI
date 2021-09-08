@@ -41,6 +41,24 @@ class ResolverTest {
     }
 
     @Test
+    fun `factory produces a new instance each time`() {
+        val container = DIContainer()
+        container.factory<Service>()
+        val service1: Service = container.resolve()
+        val service2: Service = container.resolve()
+        assertNotSame(service1, service2)
+    }
+
+    @Test
+    fun `singleton produces the same instance each time`() {
+        val container = DIContainer()
+        container.singleton<Service>()
+        val service1: Service = container.resolve()
+        val service2: Service = container.resolve()
+        assertSame(service1, service2)
+    }
+
+    @Test
     fun `parameters are ignored after first resolution of singleton`() {
         val container = DIContainer()
         container.singleton(params(::Something))
@@ -65,7 +83,7 @@ class ResolverTest {
         val container = DIContainer()
         // Tags can be of any type
         val tag = 7
-        container.factory(tag) { params ->
+        container.factory(tag = tag) { params ->
             Something(params[0])
         }
         val something: Something = container.resolve("something", tag = tag)
