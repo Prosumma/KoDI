@@ -1,10 +1,16 @@
 package com.prosumma.di
 
-inline fun <reified T> Resolver.tryResolve(vararg args: Any, tag: Any = Unit): T? =
-    resolve<T>(Key.create<T>(tag), Params(*args)).second
+inline fun <reified T> Resolver.tryResolve(
+    vararg args: Any,
+    tag: Any = Unit,
+    group: Any = Unit
+): T? = resolve<T>(Key.create<T>(tag, group), Params(*args)).second
 
-inline fun <reified T> Resolver.resolve(vararg args: Any, tag: Any = Unit): T =
-    resolve<T>(Key.create<T>(tag), Params(*args)).getInstance()
+inline fun <reified T> Resolver.resolve(
+    vararg args: Any,
+    tag: Any = Unit,
+    group: Any = Unit
+): T = resolve<T>(Key.create<T>(tag, group), Params(*args)).getInstance()
 
 inline fun <reified T> Resolver.resolveKeys(keys: List<Key>, vararg args: Any): List<T> {
     val klass = T::class

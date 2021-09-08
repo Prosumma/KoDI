@@ -20,9 +20,20 @@ class RegistrarTest {
     fun `unregistration succeeds`() {
         val container = DIContainer()
         val tag = "dep"
-        container.factory<Dependency>(tag)
+        container.factory<Dependency>(tag = tag)
         assertTrue(container.contains<Dependency>(tag))
         container.unregister<Dependency>(tag)
         assertFalse(container.contains<Dependency>(tag))
+    }
+
+    @Test
+    fun `unregisterAll succeeds`() {
+        val container = DIContainer()
+        val group = "foo"
+        container.factory<Dependency>(tag = 1, group = group)
+        container.factory<Dependency>(tag = 2, group = group)
+        assertTrue(container.containsAny(group = group))
+        container.unregisterAll(group = group)
+        assertFalse(container.containsAny(group = group))
     }
 }

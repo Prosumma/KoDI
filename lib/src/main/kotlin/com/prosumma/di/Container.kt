@@ -1,3 +1,3 @@
 package com.prosumma.di
 
-interface Container: Registrar, QueryableResolver
+interface Container: QueryableRegistrar, QueryableResolver

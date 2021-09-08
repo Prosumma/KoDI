@@ -16,9 +16,5 @@ interface Registrar {
         definition: Definition<T>
     ): Key
 
-    /**
-     * Unregisters the given key. If the key was found and
-     * removed, returns `true`, otherwise `false`.
-     */
-    fun unregister(key: Key): Boolean
+    fun <Keys: Iterable<Key>> unregister(keys: Keys)
 }

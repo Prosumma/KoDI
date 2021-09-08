@@ -27,16 +27,20 @@ open class DIContainer: Container, Assembler {
         return key
     }
 
-    override fun unregister(key: Key): Boolean = lock.write {
-        entries.remove(key) != null
+    override fun <Keys: Iterable<Key>> unregister(keys: Keys) {
+        lock.write {
+            for (key in keys) {
+                entries.remove(key)
+            }
+        }
     }
 
     @Suppress("UNCHECKED_CAST", "NAME_SHADOWING")
     override fun <T> resolve(key: Key, params: Params): Pair<Key, T?> =
-        this[key]?.let { entry ->
+        key to this[key]?.let { entry ->
             val entry = entry as Entry<T>
-            key to entry.resolve(this, params)
-        } ?: key to null
+            entry.resolve(this, params)
+        }
 
     override fun containsKey(key: Key): Boolean =
         lock.read { entries.containsKey(key) }

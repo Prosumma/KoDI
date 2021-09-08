@@ -12,19 +12,13 @@ inline fun <reified T> QueryableResolver.resolveFilter(
     vararg args: Any
 ): List<T> = resolveKeys(filter(predicate), *args)
 
-/**
- * Resolves all registrations of type `T` whatever
- * their tag.
- */
-inline fun <reified T> QueryableResolver.resolveClass(
-    vararg args: Any
-): List<T> = resolveFilter(Key.isClass<T>(), *args)
-
-/**
- * Resolves all registrations of type `T` with the
- * specified tag.
- */
-inline fun <reified T> QueryableResolver.resolveTag(
-    tag: Any,
-    vararg args: Any
-): List<T> = resolveFilter(Key.tagged(tag) and Key.isClass<T>(), *args)
+inline fun <reified T> QueryableResolver.resolveAll(
+    vararg args: Any,
+    tag: Any? = null,
+    group: Any? = null
+): List<T> {
+    var predicate = Key.isClass<T>()
+    if (tag != null) predicate = predicate and Key.tagged(tag)
+    if (group != null) predicate = predicate and Key.grouped(group)
+    return resolveFilter(predicate, *args)
+}
