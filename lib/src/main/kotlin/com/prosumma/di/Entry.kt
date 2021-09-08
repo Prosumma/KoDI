@@ -33,6 +33,7 @@ class Entry<T>(val lifetime: Lifetime, definition: Definition<T>) {
         when (val current = registration) {
             // If we're a singleton, just return the value
             is Singleton<T> -> current.instance
+            // We're a factory, so we have to know what our lifetime is
             is Factory<T> -> when (lifetime) {
                 // If we're just a factory, then run the definition
                 Lifetime.FACTORY -> {
