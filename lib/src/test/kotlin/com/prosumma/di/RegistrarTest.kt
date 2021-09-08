@@ -22,8 +22,8 @@ class RegistrarTest {
         val tag = "dep"
         container.factory<Dependency>(tag = tag)
         assertTrue(container.contains<Dependency>(tag))
-        container.unregister<Dependency>(tag)
-        assertFalse(container.contains<Dependency>(tag))
+        container.unregister<Dependency>(tag = tag)
+        assertFalse(container.contains<Dependency>(tag = tag))
     }
 
     @Test
