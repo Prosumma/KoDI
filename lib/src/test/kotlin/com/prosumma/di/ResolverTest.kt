@@ -78,4 +78,15 @@ class ResolverTest {
         val tag = 42
         assertNull(container.tryResolve<Service>(tag = tag))
     }
+
+    @Test
+    fun `resolveAll works`() {
+        val container = DIContainer()
+        val group = 42
+        container.factory(params(::Something), group = group)
+        container.factory(params(::Something), tag = 1, group = group)
+        container.factory(params(::Something), tag = 2, group = group)
+        val somethings = container.resolveAll<Something>("fish", group = group)
+        assertEquals(somethings.size, 3)
+    }
 }

@@ -18,7 +18,14 @@ group, which has the type Any:
 
 registrar.singleton(auto(::Service))
 
-These overloads eliminate Kotlin's confusion when using higher-order functions.
+These overloads eliminate Kotlin's confusion when using higher-order functions. Whenever
+using a higher-order function, always use the overload that puts the Definition before the
+group and tag. When using a trailing lambda, do the opposite.
+
+registrar.singleton(auto(::Foo), group = "foo")
+registrar.singleton(group = "foo") {
+  Foo(resolve())
+}
  */
 
 import kotlin.reflect.full.createInstance
@@ -30,16 +37,12 @@ inline fun <reified T: Any> Registrar.register(
     noinline definition: Definition<T>? = null
 ): Key = register(Key.create<T>(tag, group), lifetime, definition ?: { T::class.createInstance() })
 
-inline fun <reified T: Any> Registrar.register(
+inline fun <reified T> Registrar.register(
+    noinline definition: Definition<T>,
     lifetime: Lifetime = Lifetime.FACTORY,
-    tag: Any,
-    noinline definition: Definition<T>
-): Key = register(Key.create<T>(tag), lifetime, definition)
-
-inline fun <reified T: Any> Registrar.register(
-    lifetime: Lifetime = Lifetime.FACTORY,
-    noinline definition: Definition<T>
-): Key = register(Key.create<T>(), lifetime, definition)
+    tag: Any = Unit,
+    group: Any = Unit
+): Key = register(Key.create<T>(tag, group), lifetime, definition)
 
 inline fun <reified T: Any> Registrar.factory(
     tag: Any = Unit,
@@ -47,14 +50,11 @@ inline fun <reified T: Any> Registrar.factory(
     noinline definition: Definition<T>? = null
 ): Key = register(Lifetime.FACTORY, tag, group, definition)
 
-inline fun <reified T: Any> Registrar.factory(
-    tag: Any,
-    noinline definition: Definition<T>
-): Key = register(Lifetime.FACTORY, tag, definition)
-
-inline fun <reified T: Any> Registrar.factory(
-    noinline definition: Definition<T>
-): Key = register(Lifetime.FACTORY, definition)
+inline fun <reified T> Registrar.factory(
+    noinline definition: Definition<T>,
+    tag: Any = Unit,
+    group: Any = Unit
+): Key = register(definition, Lifetime.FACTORY, tag, group)
 
 inline fun <reified T: Any> Registrar.singleton(
     tag: Any = Unit,
@@ -62,14 +62,11 @@ inline fun <reified T: Any> Registrar.singleton(
     noinline definition: Definition<T>? = null
 ): Key = register(Lifetime.SINGLETON, tag, group, definition)
 
-inline fun <reified T: Any> Registrar.singleton(
-    tag: Any,
-    noinline definition: Definition<T>
-): Key = register(Lifetime.SINGLETON, tag, definition)
-
-inline fun <reified T: Any> Registrar.singleton(
-    noinline definition: Definition<T>
-): Key = register(Lifetime.SINGLETON, definition)
+inline fun <reified T> Registrar.singleton(
+    noinline definition: Definition<T>,
+    tag: Any = Unit,
+    group: Any = Unit
+): Key = register(definition, Lifetime.SINGLETON, tag, group)
 
 fun Registrar.unregister(key: Key) = unregister(listOf(key))
 
