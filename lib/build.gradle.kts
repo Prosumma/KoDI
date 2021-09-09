@@ -81,7 +81,7 @@ publishing {
         create<MavenPublication>("main") {
             groupId = project.group.toString()
             artifactId = "KoDI"
-            version = "0.1"
+            version = "0.1.0"
             artifact(sourcesJar)
 //            artifact(javadocJar)
 //            artifact("$buildDir/outputs/aar/${artifactId}-release.aar")
