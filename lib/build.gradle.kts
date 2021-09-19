@@ -43,4 +43,13 @@ dependencies {
     api("org.apache.commons:commons-math3:3.6.1")
 }
 
-group = "com.github.prosumma"
+publishing {
+    publications {
+        create<MavenPublication>("KoDI") {
+            groupId = "com.github.prosumma"
+            artifactId = "kodi"
+            version = "0.2.3"
+            from(components["java"])
+        }
+    }
+}
