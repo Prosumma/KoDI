@@ -6,7 +6,6 @@ import kotlin.test.*
 class ResolverTest {
     class Service
     class SuperService(val service: Service)
-
     class Something(val s: String)
 
     @Test

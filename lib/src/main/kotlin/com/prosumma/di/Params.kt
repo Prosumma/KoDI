@@ -3,11 +3,16 @@ package com.prosumma.di
 /**
  * Class used to pass params.
  */
-class Params(vararg params: Any) {
+class Params(vararg params: Any?) {
     private val parameters = params
 
     @Suppress("UNCHECKED_CAST")
     operator fun <T> get(index: Int): T = parameters[index] as T
+
+    fun <T> getOrNull(index: Int): T? =
+        if (index < parameters.size)
+            this[index]
+            else null
 
     operator fun <T> component1(): T = this[0]
     operator fun <T> component2(): T = this[1]

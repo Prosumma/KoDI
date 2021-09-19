@@ -37,7 +37,7 @@ class AssemblyTest {
     }
 
     @Test
-    fun `assembly is registered only once`() {
+    fun `assembly is registered only once by type`() {
         val container = DIContainer()
         val assembly1 = ServiceAssembly()
         val assembly2 = ServiceAssembly()
