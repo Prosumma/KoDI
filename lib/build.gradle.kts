@@ -42,3 +42,5 @@ dependencies {
     // This dependency is exported to consumers, that is to say found on their compile classpath.
     api("org.apache.commons:commons-math3:3.6.1")
 }
+
+group = "com.github.prosumma"
